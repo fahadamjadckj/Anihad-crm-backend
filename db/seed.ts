@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm"
 
 async function main() {
 
-    const user = await db.select().from(usersTable).where(eq(usersTable.email, "sciencism.org@gmail.com"))
+    const user = await db.select().from(usersTable).where(eq(usersTable.email, "test@gmail.com"))
 
     const clientMock: typeof clientsTable.$inferInsert = {
         name: faker.person.fullName(),
