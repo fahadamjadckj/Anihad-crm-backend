@@ -1,0 +1,28 @@
+services:
+  anihad-backend:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+      - database
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_URL=postgresql://postgres:fahad1234@database:5432/postgres
+    restart: always
+  redis:
+    image: redis:latest
+    expose:
+      - "6379"
+    restart: always
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=fahad1234
+    expose:
+      - "5432"
+    restart: always

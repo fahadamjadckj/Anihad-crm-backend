@@ -1,0 +1,1 @@
+ALTER TABLE "invoices_table" ALTER COLUMN "invoice_paid_date" DROP NOT NULL;
