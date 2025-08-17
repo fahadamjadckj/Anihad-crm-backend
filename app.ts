@@ -21,14 +21,6 @@ testDbConnection()
 
 const app = express()
 
-const config = process.env.NODE_ENV === "development" ? {
-    origin: '*',
-    credentials: true
-} : {
-    origin: "http://localhost:3001",
-    credentials: true,
-    optionsSuccessStatus: 200
-}
 
 app.use(cors({
     origin: "http://localhost:3001",

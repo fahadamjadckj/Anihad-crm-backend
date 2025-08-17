@@ -13,6 +13,7 @@ Anihad CRM is an open-source client relationship manager built with Node.js, Pos
   - **Production-Ready Logging:** Integrates a production-ready logging system with Pino for detailed and efficient log management.
 
 ## Getting Started
+Make sure to replace the origin url for your frontend in cors config inside app.ts
 
 ### Prerequisites
 
