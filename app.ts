@@ -21,13 +21,22 @@ testDbConnection()
 
 const app = express()
 
-
-app.use(cors({
-    origin: "http://localhost:3001",
-    credentials: true,
-    optionsSuccessStatus: 200
+let corsOptions;
+if (process.env.NODE_ENV === "development") {
+    corsOptions = {
+        origin: "http://localhost:3001",
+        credentials: true,
+        optionsSuccessStatus: 200
+    }
+} else {
+    corsOptions = {
+        origin: "http://localhost:3001", // replace with prod url
+        credentials: true,
+        optionsSuccessStatus: 200
+    }
 }
-))
+
+app.use(cors(corsOptions))
 app.use(morgan('dev'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
