@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { eq, or } from "drizzle-orm";
 import createError from "http-errors"
+import { access } from "node:fs";
+import { create } from "node:domain";
 
 const userRouter = express.Router()
 
@@ -44,8 +46,11 @@ userRouter.post('/login', async (req, res, next) => {
 
         return res.status(200).json({
             "login": true,
-            "accessToken": token,
-            "user": user
+            "user": {
+                email: user[0]?.email,
+                username: user[0]?.username,
+                accessToken: token
+            }
             // "refreshToken": refreshtoken
         })
     }
@@ -55,19 +60,26 @@ userRouter.post('/login', async (req, res, next) => {
 })
 
 
-userRouter.post("/refresh", (req, res, next) => {
-    const refreshToken = req.body.token
+userRouter.get("/refresh", (req, res, next) => {
+    const refreshToken = req.cookies.jwt
 
-    jwt.verify(refreshToken, process.env.JWT_SECRET!, (err: any, decoded: any) => {
+    console.log("cookie", req.cookies.jwt)
+
+    if (!refreshToken) {
+        return next(createError(401, "Missing JWT COOKIE!"))
+    }
+
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET!, (err: any, decoded: any) => {
         if (err) {
+            console.log("err", err.message)
             return next(createError(401, "Invalid token"))
         }
 
-        const newAccessToken = jwt.sign({ username: decoded[0]?.username, id: decoded[0]?.id, email: decoded[0]?.email, role: decoded[0]?.role }, process.env.JWT_SECRET!, {
+        const newAccessToken = jwt.sign({ username: decoded.username, id: decoded.id, email: decoded.email, role: decoded.role }, process.env.JWT_SECRET!, {
             expiresIn: '15m'
         })
 
-        res.status(200).json({ "accessToken": newAccessToken })
+        res.status(200).json({ user: { username: decoded.username, id: decoded.id, email: decoded.email, accessToken: newAccessToken } })
     })
 })
 
